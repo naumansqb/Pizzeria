@@ -1,4 +1,19 @@
 package com.pluralsight.pizzeria.model.toppings;
 
-public interface Topping {
+public abstract class Topping {
+    private String name;
+
+    public Topping(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public abstract double calculatePrice(String size);
 }
