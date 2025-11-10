@@ -1,4 +1,4 @@
 package com.pluralsight.pizzeria.model;
 
-public class Pizza {
+public class Order {
 }
