@@ -1,16 +1,11 @@
 package com.pluralsight.pizzeria.model.item;
 
-import java.util.Map;
+import com.pluralsight.pizzeria.utilities.Utilities;
 
 public class Drink implements Item {
     private String size;
     private String flavor;
     private int qty;
-
-    private static final Map<String, Double> SIZE_PRICES = Map.of(
-            "small", 2.00,
-            "medium", 2.50,
-            "large", 3.00);
 
     public Drink(String size, String flavor, int qty) {
         this.size = size;
@@ -44,11 +39,11 @@ public class Drink implements Item {
 
     @Override
     public double calculatePrice() {
-        return qty * SIZE_PRICES.get(size.toLowerCase());
+        return qty * Utilities.DRINK_SIZE_PRICES.get(size.toLowerCase());
     }
 
     @Override
     public String getDescription() {
-        return qty + ": " + size + " " + flavor;
+        return qty + " "+ size.toUpperCase() + " " + flavor;
     }
 }

@@ -1,10 +1,15 @@
 package com.pluralsight.pizzeria.userinterface;
 
 import com.pluralsight.pizzeria.model.Order;
+import com.pluralsight.pizzeria.model.item.Drink;
 import com.pluralsight.pizzeria.model.item.Pizza;
+import com.pluralsight.pizzeria.utilities.Utilities;
 
 import java.time.LocalDateTime;
+import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 public class UserInterface {
     private Scanner scanner;
@@ -20,6 +25,10 @@ public class UserInterface {
         showHomeScreen();
     }
 
+    /**
+     * Displays Home Screen To Customer
+     * Allows them to create a new order or exit the application
+     **/
     private void showHomeScreen() {
         do {
             System.out.println("1) New Order");
@@ -38,12 +47,16 @@ public class UserInterface {
         } while (true);
     }
 
+    /**
+     * Upon Clicking New Order Customer Is Shown The Order Screen Below
+     * Uses Switch Case To Move Customer To Different Displays
+     */
     private void showOrderScreen() {
-        System.out.println("=".repeat(80));
-        System.out.println("PIZZA-licious Order Menu");
-        System.out.println("=".repeat(80));
-        boolean running =true;
-        do {
+        boolean running = true;
+        while (running) {
+            System.out.println("=".repeat(80));
+            System.out.println("PIZZA-licious Order Menu");
+            System.out.println("=".repeat(80));
             System.out.println("1) Add Pizza");
             System.out.println("2) Add Drink");
             System.out.println("3) Add Garlic Knots");
@@ -51,26 +64,117 @@ public class UserInterface {
             System.out.println("0) Cancel Order");
             System.out.println("Choose an option from the menu: ");
             String choice = scanner.nextLine().trim();
-            switch (choice){
+            switch (choice) {
                 case "1" -> addPizzaScreen();
                 case "2" -> addDrinkScreen();
                 case "3" -> addGarlicKnotsScreen();
                 case "4" -> checkoutScreen();
                 case "0" -> running = false;
-                default ->  System.out.println("\nInvalid option. Please enter a valid option from 0 to 4. \n");
-
+                default -> System.out.println("\nInvalid option. Please enter a valid option from 0 to 4. \n");
             }
-        } while (running);
+        }
     }
 
+    /**
+     * Allows customer to add a drink to their order.
+     * Invokes methods to get flavor,size, and qty
+     * Handles invalid inputs && loops till customer selects a correct option
+     */
     private void addDrinkScreen() {
-        System.out.println("Added drink");
+        System.out.println("=".repeat(80));
+        System.out.println("Add Drink");
+        String flavor = chooseDrinkFlavor();
+        String size = chooseDrinkSize();
+        int qty = chooseDrinkQty();
+        Drink drink = new Drink(size, flavor, qty);
+        currentOrder.addItem(drink);
+        System.out.println();
+        System.out.println("Drink added successfully!");
+        System.out.println(drink.getDescription());
+        System.out.printf("Price: $%.2f\n", drink.calculatePrice());
+        System.out.printf("Order Total: $%.2f\n", currentOrder.calculateTotal());
+        System.out.println("\nPress the enter key to return to menu");
+        scanner.nextLine();
+    }
+
+    /**
+     * Prompts user for drink quantity and validates input is greater than 0.
+     */
+    private int chooseDrinkQty() {
+        int qty;
+        do {
+            System.out.print("Please enter quantity: ");
+            try {
+                qty = scanner.nextInt();
+                scanner.nextLine();
+                if (qty <= 0) {
+                    System.out.println("Quantity must be greater than 0. Please try again.");
+                } else {
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine();
+            }
+        } while (true);
+        return qty;
+    }
+
+    /**
+     * Prompts customer to select a drink flavor from available options.
+     */
+    private String chooseDrinkFlavor() {
+        String flavor;
+        do {
+            IntStream.range(0, Utilities.DRINK_FLAVORS.size())
+                    .forEach(t -> System.out.println((t + 1) + ") " + Utilities.DRINK_FLAVORS.get(t)));
+            System.out.print("Please choose which flavor you would like: ");
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+                if (choice > Utilities.DRINK_FLAVORS.size() || choice <= 0) {
+                    System.out.println(
+                            "Invalid option, please enter a valid option from 1 to " + Utilities.DRINK_FLAVORS.size());
+                } else {
+                    flavor = Utilities.DRINK_FLAVORS.get(choice - 1);
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println(
+                        "Invalid option, please enter a valid option from 1 to " + Utilities.DRINK_FLAVORS.size());
+                scanner.nextLine();
+            }
+        } while (true);
+        return flavor;
+    }
+
+    /**
+     * Prompts customer to select a drink size and keeps looping till valid option
+     */
+    private String chooseDrinkSize() {
+        String size;
+        System.out.println();
+        do {
+            System.out.println("Displaying size and price:  ");
+
+            Utilities.DRINK_SIZE_PRICES.entrySet().stream()
+                    .sorted(Map.Entry.comparingByValue())
+                    .forEach(t -> System.out.println(t.getKey() + " - $" + t.getValue()));
+            System.out.print("Please choose which size you would like: ");
+            String choice = scanner.nextLine().trim().toLowerCase();
+            if (Utilities.DRINK_SIZE_PRICES.containsKey(choice)) {
+                size = choice;
+                break;
+            } else {
+                System.out.println("Invalid option. Please enter 'small', 'medium', or 'large'");
+            }
+        } while (true);
+        return size;
     }
 
     private void addGarlicKnotsScreen() {
         System.out.println("Added Garlic Knot");
     }
-
 
     private void addPizzaScreen() {
         System.out.println("Added Pizza");
