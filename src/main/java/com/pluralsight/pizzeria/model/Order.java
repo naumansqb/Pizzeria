@@ -12,7 +12,7 @@ public class Order {
     private LocalDateTime orderPlacedTime;
     private List <Item> items;
 
-    public Order(String receiptNumber, LocalDateTime orderPlacedTime) {
+    public Order(LocalDateTime orderPlacedTime) {
         this.orderPlacedTime = LocalDateTime.now();
         this.receiptNumber = orderPlacedTime.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
         this.items = new ArrayList<>();
