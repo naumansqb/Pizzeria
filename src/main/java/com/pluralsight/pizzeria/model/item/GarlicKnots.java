@@ -34,6 +34,7 @@ public class GarlicKnots implements Item{
 
     @Override
     public String getDescription() {
-        return qty + " order(s) of " + numberOfPieces + "-piece garlic knots";
-    }
+            String orderWord = (qty == 1) ? "order" : "orders";
+            return qty + " " + orderWord + " of " + numberOfPieces + "-piece garlic knots";
+        }
 }

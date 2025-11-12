@@ -86,7 +86,7 @@ public class UserInterface {
         System.out.println("Add Drink");
         String flavor = chooseDrinkFlavor();
         String size = chooseDrinkSize();
-        int qty = chooseDrinkQty();
+        int qty = getQty("Please enter your quantity");
         Drink drink = new Drink(size, flavor, qty);
         currentOrder.addItem(drink);
         System.out.println();
@@ -96,29 +96,6 @@ public class UserInterface {
         System.out.printf("Order Total: $%.2f\n", currentOrder.calculateTotal());
         System.out.println("\nPress the enter key to return to menu");
         scanner.nextLine();
-    }
-
-    /**
-     * Prompts user for drink quantity and validates input is greater than 0.
-     */
-    private int chooseDrinkQty() {
-        int qty;
-        do {
-            System.out.print("Please enter quantity: ");
-            try {
-                qty = scanner.nextInt();
-                scanner.nextLine();
-                if (qty <= 0) {
-                    System.out.println("Quantity must be greater than 0. Please try again.");
-                } else {
-                    break;
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine();
-            }
-        } while (true);
-        return qty;
     }
 
     /**
@@ -193,12 +170,12 @@ public class UserInterface {
         System.out.println("-".repeat(35));
 
         int numberOfPieces = garlicKnotsNumberOfPieces();
-        int qty = garlicKnotsQty();
+        int qty = getQty("Please enter the number of orders you would like");
 
         GarlicKnots gk = new GarlicKnots(numberOfPieces, qty);
         currentOrder.addItem(gk);
 
-        System.out.println("\n✓ Garlic knots added successfully!");
+        System.out.println("\nGarlic knots added successfully!");
         System.out.println(gk.getDescription());
         System.out.printf("Price: $%.2f\n", gk.calculatePrice());
         System.out.printf("Order Total: $%.2f\n", currentOrder.calculateTotal());
@@ -215,44 +192,22 @@ public class UserInterface {
         do {
             System.out.print("\nEnter number of pieces (3, 6, or 9): ");
             try {
-                String input = scanner.nextLine().trim();
-                pieces = Integer.parseInt(input);
+                pieces = scanner.nextInt();
+                scanner.nextLine();
 
                 if (Utilities.GARLICKNOTS_SIZE_PRICES.containsKey(pieces)) {
                     break;
                 } else {
                     System.out.println("Invalid choice! Please choose 3, 6, or 9 pieces.");
                 }
-            } catch (NumberFormatException e) {
+            } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine();
             }
         } while (true);
         return pieces;
     }
 
-    /**
-     * Prompts customer for quantity of garlic knot orders
-     * Validates that quantity is greater than 0
-     */
-    private int garlicKnotsQty() {
-        int qty;
-        do {
-            System.out.print("How many orders would you like? ");
-            try {
-                String input = scanner.nextLine().trim();
-                qty = Integer.parseInt(input);
-
-                if (qty <= 0) {
-                    System.out.println("⚠ Quantity must be greater than 0. Please try again.");
-                } else {
-                    break;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("⚠ Invalid input. Please enter a valid number.");
-            }
-        } while (true);
-        return qty;
-    }
     private void addPizzaScreen() {
         System.out.println("Added Pizza");
     }
@@ -279,4 +234,29 @@ public class UserInterface {
     private void checkoutScreen() {
         System.out.println("Checked Out");
     }
+
+    /**
+     * Prompts user for a positive integer quantity with validation
+     * Ensures input is greater than 0
+     */
+    private int getQty(String prompt) {
+        int qty;
+        do {
+            System.out.print(prompt + ": ");
+            try {
+                qty = scanner.nextInt();
+                scanner.nextLine();
+
+                if (qty <= 0) {
+                    System.out.println("Must be greater than 0. Please try again.");
+                } else {
+                    return qty;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine();
+            }
+        } while (true);
+    }
+
 }
