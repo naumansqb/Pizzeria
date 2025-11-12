@@ -11,4 +11,9 @@ public class Utilities {
             "small", 2.00,
             "medium", 2.50,
             "large", 3.00);
+    public static final Map<Integer, Double> GARLICKNOTS_SIZE_PRICES = Map.of(
+            3, 1.50,
+            6, 2.75,
+            9, 3.50);
+
 }

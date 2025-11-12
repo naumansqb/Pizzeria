@@ -1,13 +1,13 @@
 package com.pluralsight.pizzeria.model.item;
 
-import java.util.Map;
+import com.pluralsight.pizzeria.utilities.Utilities;
 
 public class GarlicKnots implements Item{
     private int qty;
-    private int size;
+    private int numberOfPieces;
 
-    public GarlicKnots(int size, int qty) {
-        this.size = size;
+    public GarlicKnots(int numberOfPieces, int qty) {
+        this.numberOfPieces = numberOfPieces;
         this.qty = qty;
     }
 
@@ -19,26 +19,21 @@ public class GarlicKnots implements Item{
         this.qty = qty;
     }
 
-    public int getSize() {
-        return size;
+    public int getNumberOfPieces() {
+        return numberOfPieces;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    public void setNumberOfPieces(int numberOfPieces) {
+        this.numberOfPieces = numberOfPieces;
     }
-
-    private static final Map<Integer, Double> SIZE_PRICES = Map.of(
-            6, 1.50,
-            12, 2.75,
-            16, 3.50);
 
     @Override
     public double calculatePrice() {
-        return qty * SIZE_PRICES.get(size);
+        return qty * Utilities.GARLICKNOTS_SIZE_PRICES.get(numberOfPieces);
     }
 
     @Override
     public String getDescription() {
-        return qty + ": " + size +" pieces of garlic knots";
+        return qty + " order(s) of " + numberOfPieces + "-piece garlic knots";
     }
 }

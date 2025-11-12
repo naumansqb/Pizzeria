@@ -2,6 +2,7 @@ package com.pluralsight.pizzeria.userinterface;
 
 import com.pluralsight.pizzeria.model.Order;
 import com.pluralsight.pizzeria.model.item.Drink;
+import com.pluralsight.pizzeria.model.item.GarlicKnots;
 import com.pluralsight.pizzeria.model.item.Pizza;
 import com.pluralsight.pizzeria.utilities.Utilities;
 
@@ -172,10 +173,86 @@ public class UserInterface {
         return size;
     }
 
+    /**
+     * Allows customer to add garlic knots to their order.
+     * Prompts for number of pieces per order and quantity of orders.
+     */
     private void addGarlicKnotsScreen() {
-        System.out.println("Added Garlic Knot");
+        System.out.println("\n" + "=".repeat(80));
+        System.out.println("Add Garlic Knots");
+        System.out.println("=".repeat(80) + "\n");
+
+        System.out.println("Available sizes:");
+        System.out.println("-".repeat(35));
+
+        Utilities.GARLICKNOTS_SIZE_PRICES.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEach(t -> System.out.printf("%2d pieces ......... $%.2f\n",
+                        t.getKey(), t.getValue()));
+
+        System.out.println("-".repeat(35));
+
+        int numberOfPieces = garlicKnotsNumberOfPieces();
+        int qty = garlicKnotsQty();
+
+        GarlicKnots gk = new GarlicKnots(numberOfPieces, qty);
+        currentOrder.addItem(gk);
+
+        System.out.println("\n✓ Garlic knots added successfully!");
+        System.out.println(gk.getDescription());
+        System.out.printf("Price: $%.2f\n", gk.calculatePrice());
+        System.out.printf("Order Total: $%.2f\n", currentOrder.calculateTotal());
+        System.out.println("\nPress the enter key to return to menu");
+        scanner.nextLine();
     }
 
+    /**
+     * Prompts customer to select number of pieces per order
+     * Ensures a valid option is chosen
+     */
+    private int garlicKnotsNumberOfPieces() {
+        int pieces;
+        do {
+            System.out.print("\nEnter number of pieces (3, 6, or 9): ");
+            try {
+                String input = scanner.nextLine().trim();
+                pieces = Integer.parseInt(input);
+
+                if (Utilities.GARLICKNOTS_SIZE_PRICES.containsKey(pieces)) {
+                    break;
+                } else {
+                    System.out.println("Invalid choice! Please choose 3, 6, or 9 pieces.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        } while (true);
+        return pieces;
+    }
+
+    /**
+     * Prompts customer for quantity of garlic knot orders
+     * Validates that quantity is greater than 0
+     */
+    private int garlicKnotsQty() {
+        int qty;
+        do {
+            System.out.print("How many orders would you like? ");
+            try {
+                String input = scanner.nextLine().trim();
+                qty = Integer.parseInt(input);
+
+                if (qty <= 0) {
+                    System.out.println("⚠ Quantity must be greater than 0. Please try again.");
+                } else {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("⚠ Invalid input. Please enter a valid number.");
+            }
+        } while (true);
+        return qty;
+    }
     private void addPizzaScreen() {
         System.out.println("Added Pizza");
     }
