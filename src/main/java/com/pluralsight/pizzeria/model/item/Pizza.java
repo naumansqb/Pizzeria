@@ -1,10 +1,10 @@
 package com.pluralsight.pizzeria.model.item;
 
 import com.pluralsight.pizzeria.model.toppings.Topping;
+import com.pluralsight.pizzeria.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Pizza implements Item {
     private String size;
@@ -58,20 +58,13 @@ public class Pizza implements Item {
     public void removeTopping(Topping topping) {
         toppings.remove(topping);
     }
-    private static final Map<String, Double> SIZE_PRICES = Map.of(
-            "8", 8.50,
-            "12", 12.00,
-            "16", 16.50);
-    private static final Map<String, Double> STUFFED_CRUST_PRICES = Map.of(
-            "8", 1.00,
-            "12", 1.50,
-            "16", 2.00);
+
     @Override
     public double calculatePrice() {
-        double total = SIZE_PRICES.get(size) +
+        double total = Utilities.PIZZA_SIZE_PRICES.get(size) +
                 toppings.stream().mapToDouble(t -> t.calculatePrice(size)).sum();
         if(hasStuffedCrust){
-            total+=STUFFED_CRUST_PRICES.get(size);
+            total+=Utilities.STUFFED_CRUST_PRICES.get(size);
         }
         return total;
     }

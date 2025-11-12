@@ -3,6 +3,7 @@ package com.pluralsight.pizzeria.userinterface;
 import com.pluralsight.pizzeria.model.Order;
 import com.pluralsight.pizzeria.model.item.Drink;
 import com.pluralsight.pizzeria.model.item.GarlicKnots;
+import com.pluralsight.pizzeria.model.item.Item;
 import com.pluralsight.pizzeria.model.item.Pizza;
 import com.pluralsight.pizzeria.utilities.Utilities;
 
@@ -87,7 +88,7 @@ public class UserInterface {
         String flavor = chooseDrinkFlavor();
         String size = chooseDrinkSize();
         int qty = getQty("Please enter your quantity");
-        Drink drink = new Drink(size, flavor, qty);
+        Item drink = new Drink(size, flavor, qty);
         currentOrder.addItem(drink);
         System.out.println();
         System.out.println("Drink added successfully!");
@@ -134,7 +135,6 @@ public class UserInterface {
         System.out.println();
         do {
             System.out.println("Displaying size and price:  ");
-
             Utilities.DRINK_SIZE_PRICES.entrySet().stream()
                     .sorted(Map.Entry.comparingByValue())
                     .forEach(t -> System.out.println(t.getKey() + " - $" + t.getValue()));
@@ -172,7 +172,7 @@ public class UserInterface {
         int numberOfPieces = garlicKnotsNumberOfPieces();
         int qty = getQty("Please enter the number of orders you would like");
 
-        GarlicKnots gk = new GarlicKnots(numberOfPieces, qty);
+        Item gk = new GarlicKnots(numberOfPieces, qty);
         currentOrder.addItem(gk);
 
         System.out.println("\nGarlic knots added successfully!");
@@ -209,7 +209,74 @@ public class UserInterface {
     }
 
     private void addPizzaScreen() {
-        System.out.println("Added Pizza");
+        System.out.println("=".repeat(80));
+        System.out.println("Add Pizza");
+        System.out.println("=".repeat(80));
+
+        String pizzaSize = "";
+        do {
+            System.out.println("\nAvailable sizes:");
+            Utilities.PIZZA_SIZE_PRICES.entrySet().stream().sorted(Map.Entry.comparingByValue())
+                    .forEach(t -> System.out.printf("Size: %s inches, Price $%.2f\n", t.getKey(), t.getValue()));
+            System.out.print("Please enter the size you would like: ");
+            String choice = scanner.nextLine().trim();
+            if (Utilities.PIZZA_SIZE_PRICES.containsKey(choice)) {
+                pizzaSize = choice;
+                break;
+            } else {
+                System.out.println("Please enter a valid size from the options above.");
+            }
+        } while (true);
+
+        String crustChoice = "";
+        do {
+            System.out.println("\nAvailable crust types:");
+            IntStream.range(0, Utilities.CRUST_TYPES.size())
+                    .forEach(i -> System.out.println((i + 1) + ") " + Utilities.CRUST_TYPES.get(i)));
+            System.out.print("Please enter the number that correlates to the crust you'd like: ");
+            try {
+                int choiceNum = scanner.nextInt();
+                scanner.nextLine();
+                if (choiceNum >= 1 && choiceNum <= Utilities.CRUST_TYPES.size()) {
+                    crustChoice = Utilities.CRUST_TYPES.get(choiceNum - 1);
+                    System.out.println(crustChoice + " crust selected");
+                    break;
+                } else {
+                    System.out.println("Please enter a number between 1 and " + Utilities.CRUST_TYPES.size());
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine();
+            }
+        } while (crustChoice.isBlank());
+
+        boolean hasStuffedCrust = false;
+        String stuffedCrustOption = "";
+        do {
+            System.out.println("\nStuffed crust option:");
+            System.out.printf("For a %s\" pizza, stuffed crust costs $%.2f\n",
+                    pizzaSize, Utilities.STUFFED_CRUST_PRICES.get(pizzaSize));
+            System.out.print("Would you like to make your crust stuffed? (Y/N): ");
+            stuffedCrustOption = scanner.nextLine().trim();
+            if (stuffedCrustOption.equalsIgnoreCase("Y")) {
+                hasStuffedCrust = true;
+                break;
+            } else if (stuffedCrustOption.equalsIgnoreCase("N")) {
+                break;
+            } else {
+                System.out.println("Please enter Y for yes or N for no.");
+            }
+        } while (true);
+
+        Item pizza = new Pizza(pizzaSize, crustChoice, hasStuffedCrust);
+        currentOrder.addItem(pizza);
+
+        System.out.println("\nPizza added successfully!");
+        System.out.println(pizza.getDescription());
+        System.out.printf("Price: $%.2f\n", pizza.calculatePrice());
+        System.out.printf("Order Total: $%.2f\n", currentOrder.calculateTotal());
+        System.out.println("\nPress the enter key to return to menu");
+        scanner.nextLine();
     }
 
     private void addToppingsToPizza(Pizza pizza) {
@@ -225,7 +292,7 @@ public class UserInterface {
     private void addRegularTopping(Pizza pizza) {
     }
 
-    private void addSauce(Pizza pizza) {
+    private void addSauceTopping(Pizza pizza) {
     }
 
     private void addSideTopping(Pizza pizza) {
