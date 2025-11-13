@@ -57,12 +57,12 @@ Follow these steps to get your application running within IntelliJ IDEA:
 ![PizzaCustomization.gif](Image/PizzaCustomization.gif)
 
 ### Signature Pizza Selection
-![signature.gif](Image/signature.gif)
 *Pre-made signature pizzas available for quick ordering.*
+![signature.gif](Image/signature.gif)
 
 ### Checkout Receipt
+*Final receipt showing itemized order with total.*
 ![Checkout.gif](Image/Checkout.gif)
-*Final receipt showing itemized order with subtotal, tax, and total.*
 
 ## Future Work
 - **Edit/Remove Items**: Allow customers to remove or modify items in their cart before checkout
