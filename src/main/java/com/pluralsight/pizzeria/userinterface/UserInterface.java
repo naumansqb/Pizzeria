@@ -20,7 +20,6 @@ import com.pluralsight.pizzeria.utilities.Utilities;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.IntStream;
 
 public class UserInterface {
     private Scanner scanner;
@@ -146,8 +145,9 @@ public class UserInterface {
     private String chooseDrinkFlavor() {
         String flavor;
         do {
-            IntStream.range(0, Utilities.DRINK_FLAVORS.size())
-                    .forEach(t -> System.out.println((t + 1) + ") " + Utilities.DRINK_FLAVORS.get(t)));
+            for (int i = 0; i < Utilities.DRINK_FLAVORS.size(); i++) {
+                System.out.println((i + 1) + ") " + Utilities.DRINK_FLAVORS.get(i));
+            }
             System.out.print("Please choose which flavor you would like: ");
             try {
                 int choice = scanner.nextInt();
@@ -268,8 +268,9 @@ public class UserInterface {
         String crustChoice = "";
         do {
             System.out.println("\nAvailable crust types:");
-            IntStream.range(0, Utilities.CRUST_TYPES.size())
-                    .forEach(i -> System.out.println((i + 1) + ") " + Utilities.CRUST_TYPES.get(i)));
+            for (int i = 0; i < Utilities.CRUST_TYPES.size(); i++) {
+                System.out.println((i + 1) + ") " + Utilities.CRUST_TYPES.get(i));
+            }
             System.out.print("Please enter the number that correlates to the crust you'd like: ");
             try {
                 int choiceNum = scanner.nextInt();
@@ -371,8 +372,9 @@ public class UserInterface {
     private void addMeatTopping(Pizza pizza) {
         System.out.printf("\nFor a %s\" pizza, meat topping costs $%.2f\n",
                 pizza.getSize(), Utilities.MEAT_TOPPING_PRICES.get(pizza.getSize()));
-        IntStream.range(0, Utilities.MEAT_TOPPINGS.size())
-                .forEach(t -> System.out.println((t + 1) + ". " + Utilities.MEAT_TOPPINGS.get(t)));
+        for (int i = 0; i < Utilities.MEAT_TOPPINGS.size(); i++) {
+            System.out.println((i + 1) + ". " + Utilities.MEAT_TOPPINGS.get(i));
+        }
         System.out.print("Please enter the number that corresponds to the meat topping you'd like: ");
 
         try {
@@ -412,8 +414,9 @@ public class UserInterface {
      */
     private void addFreeTopping(Pizza pizza, List<String> toppingList, String toppingTypeName, String toppingType) {
         System.out.printf("\n%s are included in the price.\n", toppingTypeName);
-        IntStream.range(0, toppingList.size())
-                .forEach(t -> System.out.println((t + 1) + ". " + toppingList.get(t)));
+        for (int i = 0; i < toppingList.size(); i++) {
+            System.out.println((i + 1) + ". " + toppingList.get(i));
+        }
         System.out.print(
                 "Please enter the number that corresponds to the " + toppingTypeName.toLowerCase() + " you'd like: ");
 
@@ -457,8 +460,9 @@ public class UserInterface {
     private void addCheeseTopping(Pizza pizza) {
         System.out.printf("\nFor a %s\" pizza, cheese topping costs $%.2f\n",
                 pizza.getSize(), Utilities.CHEESE_TOPPING_PRICES.get(pizza.getSize()));
-        IntStream.range(0, Utilities.CHEESE_TOPPINGS.size())
-                .forEach(t -> System.out.println((t + 1) + ". " + Utilities.CHEESE_TOPPINGS.get(t)));
+        for (int i = 0; i < Utilities.CHEESE_TOPPINGS.size(); i++) {
+            System.out.println((i + 1) + ". " + Utilities.CHEESE_TOPPINGS.get(i));
+        }
         System.out.print("Please enter the number that corresponds to the cheese topping you'd like: ");
 
         try {
@@ -510,18 +514,21 @@ public class UserInterface {
             System.out.println("No items have been added to the cart. Please enter an item and try checking out again");
             return;
         }
-        List<Item> items = new ArrayList<>(currentOrder.getItems());
-        boolean hasDrinkOrGarlicKnots = items.stream()
-                .anyMatch(t -> t instanceof Drink || t instanceof GarlicKnots);
-        boolean hasPizza = items.stream().anyMatch(t -> t instanceof Pizza);
-
-        if (!hasPizza && !hasDrinkOrGarlicKnots) {
-            System.out.println(
-                    "\nOrder must contain at least one drink or garlic knots. Please add items and try again.");
-            System.out.println("Press the enter key to return to the menu.");
-            scanner.nextLine();
-            return;
-        }
+        /*
+         * List<Item> items = new ArrayList<>(currentOrder.getItems());
+         * boolean hasDrinkOrGarlicKnots = items.stream()
+         * .anyMatch(t -> t instanceof Drink || t instanceof GarlicKnots);
+         * boolean hasPizza = items.stream().anyMatch(t -> t instanceof Pizza);
+         * 
+         * if (!hasPizza && !hasDrinkOrGarlicKnots) {
+         * System.out.println(
+         * "\nOrder must contain at least one drink or garlic knots. Please add items and try again."
+         * );
+         * System.out.println("Press the enter key to return to the menu.");
+         * scanner.nextLine();
+         * return;
+         * }
+         */
 
         boolean running = true;
         while (running) {
@@ -673,8 +680,9 @@ public class UserInterface {
 
         System.out.println("\nCurrent toppings on your pizza:");
         List<Topping> toppings = pizza.getToppings();
-        IntStream.range(0, toppings.size())
-                .forEach(i -> System.out.println((i + 1) + ". " + toppings.get(i).getName().toUpperCase()));
+        for (int i = 0; i < toppings.size(); i++) {
+            System.out.println((i + 1) + ". " + toppings.get(i).getName().toUpperCase());
+        }
 
         System.out.print("Enter the number of the topping you'd like to remove (0 to cancel): ");
         try {
