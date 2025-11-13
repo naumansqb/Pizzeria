@@ -30,7 +30,7 @@ public class Order {
 
     public void setOrderPlacedTime(LocalDateTime orderPlacedTime) {
         this.orderPlacedTime = orderPlacedTime;
-        this.receiptNumber = orderPlacedTime.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+        this.receiptNumber = orderPlacedTime.format(DateTimeFormatter.ofPattern("yyyyMMdd-hhmmss"));
     }
 
     public List<Item> getItems() {
