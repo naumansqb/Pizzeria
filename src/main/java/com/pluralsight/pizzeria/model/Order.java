@@ -12,9 +12,7 @@ public class Order {
     private LocalDateTime orderPlacedTime;
     private List <Item> items;
 
-    public Order(LocalDateTime orderPlacedTime) {
-        this.orderPlacedTime = orderPlacedTime;
-        this.receiptNumber = orderPlacedTime.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+    public Order() {
         this.items = new ArrayList<>();
     }
 
@@ -32,14 +30,11 @@ public class Order {
 
     public void setOrderPlacedTime(LocalDateTime orderPlacedTime) {
         this.orderPlacedTime = orderPlacedTime;
+        this.receiptNumber = orderPlacedTime.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
     }
 
     public List<Item> getItems() {
         return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
     }
 
     public void addItem(Item item){

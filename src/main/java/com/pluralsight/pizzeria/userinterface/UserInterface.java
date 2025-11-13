@@ -11,6 +11,7 @@ import com.pluralsight.pizzeria.model.toppings.premium.MeatTopping;
 import com.pluralsight.pizzeria.model.toppings.regular.RegularTopping;
 import com.pluralsight.pizzeria.model.toppings.regular.SauceTopping;
 import com.pluralsight.pizzeria.model.toppings.regular.SideTopping;
+import com.pluralsight.pizzeria.utilities.ReceiptWriter;
 import com.pluralsight.pizzeria.utilities.Utilities;
 
 import java.time.LocalDateTime;
@@ -42,7 +43,7 @@ public class UserInterface {
             System.out.print("Choose an option: ");
             String choice = scanner.nextLine().trim();
             if (choice.equals("1")) {
-                currentOrder = new Order(LocalDateTime.now());
+                currentOrder = new Order();
                 showOrderScreen();
             } else if (choice.equals("0")) {
                 System.out.println("Have an amazing day!");
@@ -75,7 +76,12 @@ public class UserInterface {
                 case "1" -> addPizzaScreen();
                 case "2" -> addDrinkScreen();
                 case "3" -> addGarlicKnotsScreen();
-                case "4" -> checkoutScreen();
+                case "4" -> {
+                    checkoutScreen();
+                    if (currentOrder == null) {
+                        running = false;
+                    }
+                }
                 case "0" -> running = false;
                 default -> System.out.println("\nInvalid option. Please enter a valid option from 0 to 4. \n");
             }
@@ -526,7 +532,47 @@ public class UserInterface {
     }
 
     private void checkoutScreen() {
-        System.out.println("Checked Out");
+        ReceiptWriter rw = new ReceiptWriter();
+        if (currentOrder == null || currentOrder.getItems().isEmpty()) {
+            System.out.println("No items have been added to the cart. Please enter an item and try checking out again");
+            return;
+        }
+        List<Item> items = new ArrayList<>(currentOrder.getItems());
+        boolean hasDrinkOrGarlicKnots = items.stream()
+                .anyMatch(t -> t instanceof Drink || t instanceof GarlicKnots);
+        boolean hasPizza = items.stream().anyMatch(t -> t instanceof Pizza);
+
+        if (!hasPizza && !hasDrinkOrGarlicKnots) {
+            System.out.println(
+                    "\nOrder must contain at least one drink or garlic knots. Please add items and try again.");
+            System.out.println("Press the enter key to return to the menu.");
+            scanner.nextLine();
+            return;
+        }
+
+        boolean running = true;
+        while (running) {
+            rw.displayReceipt(currentOrder);
+            System.out.println("Would you like to \n 1. Checkout \n or \n 2. Cancel Order? \n (1 or 2)");
+            String toCheckout = scanner.nextLine().trim();
+            switch (toCheckout) {
+                case "1":
+                    currentOrder.setOrderPlacedTime(LocalDateTime.now());
+                    System.out.println("Thank you for your purchase. Have a great day.");
+                    rw.displayReceipt(currentOrder);
+                    rw.saveReceipt(currentOrder);
+                    currentOrder = null;
+                    running = false;
+                    break;
+                case "2":
+                    System.out.println("cancelling order");
+                    currentOrder = null;
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid input. Please enter a valid input");
+            }
+        }
     }
 
     /**
