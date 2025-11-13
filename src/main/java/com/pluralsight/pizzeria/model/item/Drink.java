@@ -44,6 +44,6 @@ public class Drink implements Item {
 
     @Override
     public String getDescription() {
-        return qty + " "+ size.toUpperCase() + " " + flavor;
+        return qty + "x " + (size.toUpperCase()) + " " + (flavor);
     }
 }

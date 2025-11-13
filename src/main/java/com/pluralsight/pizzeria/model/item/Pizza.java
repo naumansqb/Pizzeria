@@ -1,10 +1,13 @@
 package com.pluralsight.pizzeria.model.item;
 
 import com.pluralsight.pizzeria.model.toppings.Topping;
+import com.pluralsight.pizzeria.model.toppings.premium.PremiumTopping;
+import com.pluralsight.pizzeria.model.toppings.regular.SauceTopping;
 import com.pluralsight.pizzeria.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Pizza implements Item {
     private String size;
@@ -71,12 +74,21 @@ public class Pizza implements Item {
 
     @Override
     public String getDescription() {
-       return "Pizza{" +
-                "size='" + size + '\'' +
-                ", crustType='" + crustType + '\'' +
-                ", toppings=" + toppings +
-                ", hasStuffedCrust=" + hasStuffedCrust +
-                '}';
+        String crust = crustType + " crust" + (hasStuffedCrust ? " (stuffed)" : "");
+        String toppingsList = toppings.isEmpty() ? "" :
+            " with " + toppings.stream()
+                .map(t -> {
+                    String name = t.getName().toUpperCase();
+                    if (t instanceof PremiumTopping premium && premium.isExtra()) {
+                        name += " (extra)";
+                    }else if(t instanceof SauceTopping){
+                        name+= " (sauce)";
+                    }
+                    return name;
+                }).collect(Collectors.joining(", "));
+        
+        return size + "\" Pizza - " + crust + toppingsList;
     }
+
 
 }
