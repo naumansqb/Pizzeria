@@ -220,7 +220,7 @@ public class UserInterface {
         boolean hasStuffedCrust = chooseStuffedCrust(pizzaSize);
 
         Item pizza = new Pizza(pizzaSize, crustChoice, hasStuffedCrust);
-
+        addToppingsToPizza((Pizza) pizza);
 
         currentOrder.addItem(pizza);
 
@@ -308,6 +308,49 @@ public class UserInterface {
     }
 
     private void addToppingsToPizza(Pizza pizza) {
+        String choice = "";
+        do {
+            System.out.print("Would you like to add toppings to your pizza? (Y/N): ");
+            choice = scanner.nextLine().trim();
+            if (!choice.equalsIgnoreCase("y") && !choice.equalsIgnoreCase("n")) {
+                System.out.println("Invalid Response. Please choose Y or N.");
+            }
+        } while (!choice.equalsIgnoreCase("y") && !choice.equalsIgnoreCase("n"));
+        if (choice.equalsIgnoreCase("n")) {
+            return;
+        }
+        while (true) {
+            System.out.println("=".repeat(80));
+            System.out.println("Add Toppings");
+            System.out.println("=".repeat(80));
+            System.out.println("1. Meat Topping");
+            System.out.println("2. Cheese Topping");
+            System.out.println("3. Regular Toppings");
+            System.out.println("4. Sauce Toppings");
+            System.out.println("5. Side Toppings");
+            System.out.println("0. Done adding toppings");
+            System.out.print("Which topping would you like to add? ");
+
+            try {
+                int toppingChoice = scanner.nextInt();
+                scanner.nextLine();
+
+                if (toppingChoice == 0) {
+                    break;
+                }
+                switch (toppingChoice) {
+                    case 1 -> addMeatTopping(pizza);
+                    case 2 -> addCheeseTopping(pizza);
+                    case 3 -> addRegularTopping(pizza);
+                    case 4 -> addSauceTopping(pizza);
+                    case 5 -> addSideTopping(pizza);
+                    default -> System.out.println("Invalid Option. Please try again.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine();
+            }
+        }
     }
 
     private void addMeatTopping(Pizza pizza) {
