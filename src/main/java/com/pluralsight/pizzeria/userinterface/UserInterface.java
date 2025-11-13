@@ -5,6 +5,8 @@ import com.pluralsight.pizzeria.model.item.Drink;
 import com.pluralsight.pizzeria.model.item.GarlicKnots;
 import com.pluralsight.pizzeria.model.item.Item;
 import com.pluralsight.pizzeria.model.item.Pizza;
+import com.pluralsight.pizzeria.model.toppings.Topping;
+import com.pluralsight.pizzeria.model.toppings.regular.RegularTopping;
 import com.pluralsight.pizzeria.utilities.Utilities;
 
 import java.time.LocalDateTime;
@@ -213,6 +215,28 @@ public class UserInterface {
         System.out.println("Add Pizza");
         System.out.println("=".repeat(80));
 
+        String pizzaSize = choosePizzaSize();
+        String crustChoice = chooseCrustType();
+        boolean hasStuffedCrust = chooseStuffedCrust(pizzaSize);
+
+        Item pizza = new Pizza(pizzaSize, crustChoice, hasStuffedCrust);
+
+
+        currentOrder.addItem(pizza);
+
+        System.out.println("\nPizza added successfully!");
+        System.out.println(pizza.getDescription());
+        System.out.printf("Price: $%.2f\n", pizza.calculatePrice());
+        System.out.printf("Order Total: $%.2f\n", currentOrder.calculateTotal());
+        System.out.println("Press the enter key to return to menu");
+        scanner.nextLine();
+    }
+
+    /**
+     * Prompts customer to select a pizza size
+     * Ensures a valid size is chosen
+     */
+    private String choosePizzaSize() {
         String pizzaSize = "";
         do {
             System.out.println("\nAvailable sizes:");
@@ -227,7 +251,14 @@ public class UserInterface {
                 System.out.println("Please enter a valid size from the options above.");
             }
         } while (true);
+        return pizzaSize;
+    }
 
+    /**
+     * Prompts customer to select a crust type
+     * Ensures a valid crust type is chosen
+     */
+    private String chooseCrustType() {
         String crustChoice = "";
         do {
             System.out.println("\nAvailable crust types:");
@@ -249,7 +280,13 @@ public class UserInterface {
                 scanner.nextLine();
             }
         } while (crustChoice.isBlank());
+        return crustChoice;
+    }
 
+    /**
+     * Prompts customer to choose if they want stuffed crust
+     */
+    private boolean chooseStuffedCrust(String pizzaSize) {
         boolean hasStuffedCrust = false;
         String stuffedCrustOption = "";
         do {
@@ -267,16 +304,7 @@ public class UserInterface {
                 System.out.println("Please enter Y for yes or N for no.");
             }
         } while (true);
-
-        Item pizza = new Pizza(pizzaSize, crustChoice, hasStuffedCrust);
-        currentOrder.addItem(pizza);
-
-        System.out.println("\nPizza added successfully!");
-        System.out.println(pizza.getDescription());
-        System.out.printf("Price: $%.2f\n", pizza.calculatePrice());
-        System.out.printf("Order Total: $%.2f\n", currentOrder.calculateTotal());
-        System.out.println("\nPress the enter key to return to menu");
-        scanner.nextLine();
+        return hasStuffedCrust;
     }
 
     private void addToppingsToPizza(Pizza pizza) {
