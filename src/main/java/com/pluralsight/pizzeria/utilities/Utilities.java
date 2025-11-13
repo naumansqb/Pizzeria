@@ -31,7 +31,7 @@ public class Utilities {
                         "pepperoni", "sausage", "ham", "bacon", "chicken", "meatball");
 
 
-        public static final List<String> CHEESE_TOPPINGS = List.of(
+        public static final List<String> REGULAR_TOPPING = List.of(
                         "mozzarella", "parmesan", "ricotta", "goat cheese", "buffalo");
 
         public static final List<String> REGULAR_TOPPINGS = List.of(
