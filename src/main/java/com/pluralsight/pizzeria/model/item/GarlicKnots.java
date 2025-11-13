@@ -1,24 +1,21 @@
 package com.pluralsight.pizzeria.model.item;
 
-import com.pluralsight.pizzeria.utilities.Utilities;
-
 public class GarlicKnots implements Item{
     private int qty;
-    private int numberOfPieces;
+    private static final double PRICE_PER_ORDER = 1.50;
 
-    public GarlicKnots(int numberOfPieces, int qty) {
-        this.numberOfPieces = numberOfPieces;
+    public GarlicKnots(int qty) {
         this.qty = qty;
     }
 
     @Override
     public double calculatePrice() {
-        return qty * Utilities.GARLICKNOTS_SIZE_PRICES.get(numberOfPieces);
+        return qty * PRICE_PER_ORDER;
     }
 
     @Override
     public String getDescription() {
             String orderWord = (qty == 1) ? "order" : "orders";
-            return qty + " " + orderWord + " of " + numberOfPieces + "-piece Garlic Knots";
+            return qty + " " + orderWord + " of Garlic Knots";
     }
 }
