@@ -9,10 +9,13 @@ import com.pluralsight.pizzeria.model.toppings.Topping;
 import com.pluralsight.pizzeria.model.toppings.premium.CheeseTopping;
 import com.pluralsight.pizzeria.model.toppings.premium.MeatTopping;
 import com.pluralsight.pizzeria.model.toppings.regular.RegularTopping;
+import com.pluralsight.pizzeria.model.toppings.regular.SauceTopping;
+import com.pluralsight.pizzeria.model.toppings.regular.SideTopping;
 import com.pluralsight.pizzeria.utilities.Utilities;
 
 import java.time.LocalDateTime;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.IntStream;
@@ -363,7 +366,7 @@ public class UserInterface {
      * Displays Meat Topping Options
      * Prompts user to add topping of choice
      * Can't add same topping to pizza
-     * 
+     *
      * @param pizza The pizza to add the topping to
      */
     private void addMeatTopping(Pizza pizza) {
@@ -404,22 +407,70 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Method to add all the free toppings option
+     * Uses passed in parameters to add topping to pizza
+     */
+    private void addFreeTopping(Pizza pizza, List<String> toppingList, String toppingTypeName, String toppingType) {
+        System.out.printf("\n%s are included in the price.\n", toppingTypeName);
+        IntStream.range(0, toppingList.size())
+                .forEach(t -> System.out.println((t + 1) + ". " + toppingList.get(t)));
+        System.out.print(
+                "Please enter the number that corresponds to the " + toppingTypeName.toLowerCase() + " you'd like: ");
+
+        try {
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            if (choice < 1 || choice > toppingList.size()) {
+                System.out.println("Invalid option. Please try again.");
+                return;
+            }
+
+            String selectedTopping = toppingList.get(choice - 1);
+
+            boolean toppingExists = pizza.getToppings().stream()
+                    .anyMatch(t -> t.getName().equalsIgnoreCase(selectedTopping));
+
+            if (toppingExists) {
+                System.out.printf("\n%s is already on your pizza, please select a different topping\n",
+                        selectedTopping.toUpperCase());
+            } else {
+                Topping topping;
+                if (toppingType.equalsIgnoreCase("regular")) {
+                    topping = new RegularTopping(selectedTopping);
+                } else if (toppingType.equalsIgnoreCase("sauce")) {
+                    topping = new SauceTopping(selectedTopping);
+                } else if (toppingType.equalsIgnoreCase("side")) {
+                    topping = new SideTopping(selectedTopping);
+                } else {
+                    System.out.println("Invalid topping type.");
+                    return;
+                }
+                pizza.addTopping(topping);
+                System.out.println(selectedTopping.toUpperCase() + " added to pizza!");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid number.");
+            scanner.nextLine();
+        }
+    }
+
     private void addCheeseTopping(Pizza pizza) {
         System.out.printf("\nFor a %s\" pizza, cheese topping costs $%.2f\n",
                 pizza.getSize(), Utilities.CHEESE_TOPPING_PRICES.get(pizza.getSize()));
-        IntStream.range(0, Utilities.REGULAR_TOPPING.size())
-                .forEach(t -> System.out.println((t + 1) + ". " + Utilities.REGULAR_TOPPING.get(t)));
+        IntStream.range(0, Utilities.CHEESE_TOPPINGS.size())
+                .forEach(t -> System.out.println((t + 1) + ". " + Utilities.CHEESE_TOPPINGS.get(t)));
         System.out.print("Please enter the number that corresponds to the cheese topping you'd like: ");
 
         try {
             int choice = scanner.nextInt();
             scanner.nextLine();
-            if (choice < 1 || choice > Utilities.REGULAR_TOPPING.size()) {
+            if (choice < 1 || choice > Utilities.CHEESE_TOPPINGS.size()) {
                 System.out.println("Invalid option. Please try again.");
                 return;
             }
 
-            String selectedCheese = Utilities.REGULAR_TOPPING.get(choice - 1);
+            String selectedCheese = Utilities.CHEESE_TOPPINGS.get(choice - 1);
 
             boolean toppingExists = pizza.getToppings().stream()
                     .anyMatch(t -> t.getName().equalsIgnoreCase(selectedCheese));
@@ -443,13 +494,15 @@ public class UserInterface {
     }
 
     private void addRegularTopping(Pizza pizza) {
-
+        addFreeTopping(pizza, Utilities.REGULAR_TOPPINGS, "Regular toppings", "regular");
     }
 
     private void addSauceTopping(Pizza pizza) {
+        addFreeTopping(pizza, Utilities.SAUCE_TOPPINGS, "Sauces", "sauce");
     }
 
     private void addSideTopping(Pizza pizza) {
+        addFreeTopping(pizza, Utilities.SIDE_TOPPINGS, "Sides", "side");
     }
 
     private void checkoutScreen() {
