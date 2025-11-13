@@ -93,7 +93,7 @@ public class UserInterface {
         System.out.println("\nCurrent Order:");
         System.out.println("_".repeat(80));
 
-        List<Item> items = new ArrayList<>();
+        List<Item> items = new ArrayList<>(currentOrder.getItems());
         Collections.reverse(items);
         int itemNumber = 0;
         for (Item item : items) {
