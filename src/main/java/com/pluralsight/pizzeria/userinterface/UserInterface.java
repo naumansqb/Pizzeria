@@ -20,7 +20,7 @@ import com.pluralsight.pizzeria.utilities.Utilities;
 
 import java.time.LocalDateTime;
 import java.util.*;
-        import java.util.stream.IntStream;
+import java.util.stream.IntStream;
 
 public class UserInterface {
     private Scanner scanner;
@@ -193,27 +193,19 @@ public class UserInterface {
 
     /**
      * Allows customer to add garlic knots to their order.
-     * Prompts for number of pieces per order and quantity of orders.
+     * Prompts for quantity of orders at $1.50 per order.
      */
     private void addGarlicKnotsScreen() {
         System.out.println("\n" + "=".repeat(80));
         System.out.println("Add Garlic Knots");
         System.out.println("=".repeat(80) + "\n");
 
-        System.out.println("Available sizes:");
+        System.out.println("Garlic Knots: $1.50 per order");
         System.out.println("-".repeat(35));
 
-        Utilities.GARLICKNOTS_SIZE_PRICES.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue())
-                .forEach(t -> System.out.printf("%2d pieces ......... $%.2f\n",
-                        t.getKey(), t.getValue()));
-
-        System.out.println("-".repeat(35));
-
-        int numberOfPieces = garlicKnotsNumberOfPieces();
         int qty = getQty("Please enter the number of orders you would like");
 
-        Item gk = new GarlicKnots(numberOfPieces, qty);
+        Item gk = new GarlicKnots(qty);
         currentOrder.addItem(gk);
 
         System.out.println("\nGarlic knots added successfully!");
@@ -222,31 +214,6 @@ public class UserInterface {
         System.out.printf("Order Total: $%.2f\n", currentOrder.calculateTotal());
         System.out.println("\nPress the enter key to return to menu");
         scanner.nextLine();
-    }
-
-    /**
-     * Prompts customer to select number of pieces per order
-     * Ensures a valid option is chosen
-     */
-    private int garlicKnotsNumberOfPieces() {
-        int pieces;
-        do {
-            System.out.print("\nEnter number of pieces (3, 6, or 9): ");
-            try {
-                pieces = scanner.nextInt();
-                scanner.nextLine();
-
-                if (Utilities.GARLICKNOTS_SIZE_PRICES.containsKey(pieces)) {
-                    break;
-                } else {
-                    System.out.println("Invalid choice! Please choose 3, 6, or 9 pieces.");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine();
-            }
-        } while (true);
-        return pieces;
     }
 
     private void addPizzaScreen() {
@@ -580,6 +547,7 @@ public class UserInterface {
             }
         }
     }
+
     /**
      * Allows customer to select a signature pizza and customize it
      * Displays available signature pizzas and allows customization
