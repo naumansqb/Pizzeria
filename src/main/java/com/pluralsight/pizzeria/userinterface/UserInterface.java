@@ -5,6 +5,10 @@ import com.pluralsight.pizzeria.model.item.Drink;
 import com.pluralsight.pizzeria.model.item.GarlicKnots;
 import com.pluralsight.pizzeria.model.item.Item;
 import com.pluralsight.pizzeria.model.item.Pizza;
+import com.pluralsight.pizzeria.model.item.signaturepizza.Hawaiian;
+import com.pluralsight.pizzeria.model.item.signaturepizza.Margherita;
+import com.pluralsight.pizzeria.model.item.signaturepizza.SignaturePizza;
+import com.pluralsight.pizzeria.model.item.signaturepizza.Veggie;
 import com.pluralsight.pizzeria.model.toppings.Topping;
 import com.pluralsight.pizzeria.model.toppings.premium.CheeseTopping;
 import com.pluralsight.pizzeria.model.toppings.premium.MeatTopping;
@@ -16,7 +20,7 @@ import com.pluralsight.pizzeria.utilities.Utilities;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.IntStream;
+        import java.util.stream.IntStream;
 
 public class UserInterface {
     private Scanner scanner;
@@ -68,7 +72,8 @@ public class UserInterface {
             System.out.println("1) Add Pizza");
             System.out.println("2) Add Drink");
             System.out.println("3) Add Garlic Knots");
-            System.out.println("4) Checkout");
+            System.out.println("4) Add Signature Pizza");
+            System.out.println("5) Checkout");
             System.out.println("0) Cancel Order");
             System.out.print("Choose an option from the menu: ");
             String choice = scanner.nextLine().trim();
@@ -76,14 +81,15 @@ public class UserInterface {
                 case "1" -> addPizzaScreen();
                 case "2" -> addDrinkScreen();
                 case "3" -> addGarlicKnotsScreen();
-                case "4" -> {
+                case "4" -> addSignaturePizza();
+                case "5" -> {
                     checkoutScreen();
                     if (currentOrder == null) {
                         running = false;
                     }
                 }
                 case "0" -> running = false;
-                default -> System.out.println("\nInvalid option. Please enter a valid option from 0 to 4. \n");
+                default -> System.out.println("\nInvalid option. Please enter a valid option from 0 to 5. \n");
             }
         }
     }
@@ -572,6 +578,156 @@ public class UserInterface {
                 default:
                     System.out.println("Invalid input. Please enter a valid input");
             }
+        }
+    }
+    /**
+     * Allows customer to select a signature pizza and customize it
+     * Displays available signature pizzas and allows customization
+     */
+    private void addSignaturePizza() {
+        System.out.println("=".repeat(80));
+        System.out.println("Add Signature Pizza");
+        System.out.println("=".repeat(80));
+
+        System.out.println("\nAvailable Signature Pizzas:");
+        System.out.println("1. Margherita");
+        System.out.println("   - 12\" Regular crust");
+        System.out.println("   - Mozzarella, Tomatoes, Basil, Marinara, Olive Oil");
+        System.out.println("2. Veggie");
+        System.out.println("   - 8\" Regular crust");
+        System.out.println("   - Bell Peppers, Spinach, Olives, Onions, Marinara, Mozzarella");
+        System.out.println("3. Hawaiian");
+        System.out.println("   - 12\" Regular crust");
+        System.out.println("   - Ham, Pineapple, Mozzarella, Marinara");
+
+        SignaturePizza signaturePizza = null;
+        do {
+            System.out.print("\nPlease select a signature pizza (1, 2, or 3): ");
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine();
+
+                if (choice == 1) {
+                    signaturePizza = new Margherita();
+                    System.out.println("\nMargherita pizza selected!");
+                    break;
+                } else if (choice == 2) {
+                    signaturePizza = new Veggie();
+                    System.out.println("\nVeggie pizza selected!");
+                    break;
+                } else if (choice == 3) {
+                    signaturePizza = new Hawaiian();
+                    System.out.println("\nHawaiian pizza selected!");
+                    break;
+                } else {
+                    System.out.println("Invalid option. Please enter 1, 2, or 3.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine();
+            }
+        } while (true);
+
+        System.out.println("\nSignature Pizza Details:");
+        System.out.println(signaturePizza.getDescription());
+        System.out.printf("Base Price: $%.2f\n", signaturePizza.calculatePrice());
+
+        System.out.println("\nWould you like to customize your signature pizza?");
+        System.out.println("You can add or remove toppings.");
+        customizeSignaturePizza(signaturePizza);
+
+        currentOrder.addItem(signaturePizza);
+
+        System.out.println("\nSignature pizza added successfully!");
+        System.out.println(signaturePizza.getDescription());
+        System.out.printf("Price: $%.2f\n", signaturePizza.calculatePrice());
+        System.out.printf("Order Total: $%.2f\n", currentOrder.calculateTotal());
+        System.out.println("Press the enter key to return to menu");
+        scanner.nextLine();
+    }
+
+    /**
+     * Allows customer to customize their signature pizza by adding or removing
+     * toppings
+     */
+    private void customizeSignaturePizza(SignaturePizza pizza) {
+        String choice = "";
+        do {
+            System.out.print("Would you like to customize? (Y/N): ");
+            choice = scanner.nextLine().trim();
+            if (!choice.equalsIgnoreCase("y") && !choice.equalsIgnoreCase("n")) {
+                System.out.println("Invalid Response. Please choose Y or N.");
+            }
+        } while (!choice.equalsIgnoreCase("y") && !choice.equalsIgnoreCase("n"));
+
+        if (choice.equalsIgnoreCase("n")) {
+            return;
+        }
+
+        while (true) {
+            System.out.println("=".repeat(80));
+            System.out.println("Customize Signature Pizza");
+            System.out.println("=".repeat(80));
+            System.out.println("Current pizza: " + pizza.getDescription());
+            System.out.println("\n1. Add Toppings");
+            System.out.println("2. Remove Toppings");
+            System.out.println("0. Done customizing");
+            System.out.print("Choose an option: ");
+
+            try {
+                int option = scanner.nextInt();
+                scanner.nextLine();
+
+                if (option == 0) {
+                    break;
+                } else if (option == 1) {
+                    addToppingsToPizza(pizza);
+                } else if (option == 2) {
+                    removeToppingsFromPizza(pizza);
+                } else {
+                    System.out.println("Invalid option. Please try again.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    /**
+     * Allows customer to remove toppings from their signature pizza
+     */
+    private void removeToppingsFromPizza(SignaturePizza pizza) {
+        if (pizza.getToppings().isEmpty()) {
+            System.out.println("\nNo toppings to remove.");
+            return;
+        }
+
+        System.out.println("\nCurrent toppings on your pizza:");
+        List<Topping> toppings = pizza.getToppings();
+        IntStream.range(0, toppings.size())
+                .forEach(i -> System.out.println((i + 1) + ". " + toppings.get(i).getName().toUpperCase()));
+
+        System.out.print("Enter the number of the topping you'd like to remove (0 to cancel): ");
+        try {
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            if (choice == 0) {
+                return;
+            }
+
+            if (choice < 1 || choice > toppings.size()) {
+                System.out.println("Invalid option. Please try again.");
+                return;
+            }
+
+            Topping toppingToRemove = toppings.get(choice - 1);
+            pizza.removeTopping(toppingToRemove);
+            System.out.println(toppingToRemove.getName().toUpperCase() + " removed from pizza!");
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid number.");
+            scanner.nextLine();
         }
     }
 
