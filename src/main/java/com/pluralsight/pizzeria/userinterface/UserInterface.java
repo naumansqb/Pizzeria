@@ -6,6 +6,8 @@ import com.pluralsight.pizzeria.model.item.GarlicKnots;
 import com.pluralsight.pizzeria.model.item.Item;
 import com.pluralsight.pizzeria.model.item.Pizza;
 import com.pluralsight.pizzeria.model.toppings.Topping;
+import com.pluralsight.pizzeria.model.toppings.premium.MeatTopping;
+import com.pluralsight.pizzeria.model.toppings.premium.PremiumTopping;
 import com.pluralsight.pizzeria.model.toppings.regular.RegularTopping;
 import com.pluralsight.pizzeria.utilities.Utilities;
 
@@ -307,6 +309,10 @@ public class UserInterface {
         return hasStuffedCrust;
     }
 
+    /**
+     * Gives customer option to add toppings
+     * Uses switch to transfer to add topping of choice
+     */
     private void addToppingsToPizza(Pizza pizza) {
         String choice = "";
         do {
@@ -353,8 +359,50 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Displays Meat Topping Options
+     * Prompts user to add topping of choice
+     * Can't add same topping to pizza
+     * 
+     * @param pizza The pizza to add the topping to
+     */
     private void addMeatTopping(Pizza pizza) {
+        System.out.printf("\nFor a %s\" pizza, meat topping costs $%.2f\n",
+                pizza.getSize(), Utilities.MEAT_TOPPING_PRICES.get(pizza.getSize()));
+        IntStream.range(0, Utilities.MEAT_TOPPINGS.size())
+                .forEach(t -> System.out.println((t + 1) + ". " + Utilities.MEAT_TOPPINGS.get(t)));
+        System.out.print("Please enter the number that corresponds to the meat topping you'd like: ");
 
+        try {
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            if (choice < 1 || choice > Utilities.MEAT_TOPPINGS.size()) {
+                System.out.println("Invalid option. Please try again.");
+                return;
+            }
+
+            String selectedMeat = Utilities.MEAT_TOPPINGS.get(choice - 1);
+
+            boolean toppingExists = pizza.getToppings().stream()
+                    .anyMatch(t -> t.getName().equalsIgnoreCase(selectedMeat));
+
+            if (toppingExists) {
+                System.out.printf("\n%s is already on your pizza, please select a different topping\n",
+                        selectedMeat.toUpperCase());
+                return;
+            } else {
+                System.out.printf("\nFor a %s\" pizza, extra meat topping costs $%.2f\n",
+                        pizza.getSize(), Utilities.EXTRA_MEAT_PRICES.get(pizza.getSize()));
+                System.out.print("Would you like to add extra meat? (Y/N): ");
+                boolean extraMeat = scanner.nextLine().trim().equalsIgnoreCase("Y");
+                Topping topping = new MeatTopping(selectedMeat, extraMeat);
+                pizza.addTopping(topping);
+                System.out.println(selectedMeat.toUpperCase() + (extraMeat ? " (extra)" : "") + " added to pizza!");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid number.");
+            scanner.nextLine();
+        }
     }
 
     private void addCheeseTopping(Pizza pizza) {
