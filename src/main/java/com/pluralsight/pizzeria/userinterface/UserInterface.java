@@ -14,10 +14,7 @@ import com.pluralsight.pizzeria.model.toppings.regular.SideTopping;
 import com.pluralsight.pizzeria.utilities.Utilities;
 
 import java.time.LocalDateTime;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class UserInterface {
@@ -66,12 +63,13 @@ public class UserInterface {
             System.out.println("=".repeat(80));
             System.out.println("PIZZA-licious Order Menu");
             System.out.println("=".repeat(80));
+            displayCurrentOrder();
             System.out.println("1) Add Pizza");
             System.out.println("2) Add Drink");
             System.out.println("3) Add Garlic Knots");
             System.out.println("4) Checkout");
             System.out.println("0) Cancel Order");
-            System.out.println("Choose an option from the menu: ");
+            System.out.print("Choose an option from the menu: ");
             String choice = scanner.nextLine().trim();
             switch (choice) {
                 case "1" -> addPizzaScreen();
@@ -82,6 +80,30 @@ public class UserInterface {
                 default -> System.out.println("\nInvalid option. Please enter a valid option from 0 to 4. \n");
             }
         }
+    }
+
+    /**
+     * Displays the current order items with newest items first
+     * Shows individual item prices and total
+     */
+    private void displayCurrentOrder() {
+        if (currentOrder == null || currentOrder.getItems().isEmpty()) {
+            return;
+        }
+        System.out.println("\nCurrent Order:");
+        System.out.println("_".repeat(80));
+
+        List<Item> items = new ArrayList<>();
+        Collections.reverse(items);
+        int itemNumber = 0;
+        for (Item item : items) {
+            System.out.printf("%d. %s\n", ++itemNumber, item.getDescription());
+            System.out.printf("   Price: $%.2f\n", item.calculatePrice());
+        }
+
+        System.out.println("_".repeat(80));
+        System.out.printf("Order Total: $%.2f\n", currentOrder.calculateTotal());
+        System.out.println();
     }
 
     /**
@@ -366,8 +388,6 @@ public class UserInterface {
      * Displays Meat Topping Options
      * Prompts user to add topping of choice
      * Can't add same topping to pizza
-     *
-     * @param pizza The pizza to add the topping to
      */
     private void addMeatTopping(Pizza pizza) {
         System.out.printf("\nFor a %s\" pizza, meat topping costs $%.2f\n",
