@@ -10,10 +10,5 @@ public abstract class Topping {
     public String getName() {
         return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public abstract double calculatePrice(String size);
 }

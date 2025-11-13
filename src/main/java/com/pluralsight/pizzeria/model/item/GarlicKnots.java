@@ -11,22 +11,6 @@ public class GarlicKnots implements Item{
         this.qty = qty;
     }
 
-    public int getQty() {
-        return qty;
-    }
-
-    public void setQty(int qty) {
-        this.qty = qty;
-    }
-
-    public int getNumberOfPieces() {
-        return numberOfPieces;
-    }
-
-    public void setNumberOfPieces(int numberOfPieces) {
-        this.numberOfPieces = numberOfPieces;
-    }
-
     @Override
     public double calculatePrice() {
         return qty * Utilities.GARLICKNOTS_SIZE_PRICES.get(numberOfPieces);

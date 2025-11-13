@@ -20,10 +20,6 @@ public class Order {
         return receiptNumber;
     }
 
-    public void setReceiptNumber(String receiptNumber) {
-        this.receiptNumber = receiptNumber;
-    }
-
     public LocalDateTime getOrderPlacedTime() {
         return orderPlacedTime;
     }
@@ -40,19 +36,7 @@ public class Order {
     public void addItem(Item item){
         items.add(item);
     }
-    public void removeItem(Item item){
-        items.remove(item);
-    }
 
-    public double calculateTotal(){
-        return items.stream().mapToDouble(Item::calculatePrice).sum();
-    }
-
-    public String orderSummary() {
-        return "Order{" +
-                "receiptNumber='" + receiptNumber + '\'' +
-                ", orderPlacedTime=" + orderPlacedTime +
-                ", items=" + items +
-                '}';
-    }
+    public double calculateTotal() {
+        return items.stream().mapToDouble(Item::calculatePrice).sum(); }
 }

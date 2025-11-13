@@ -26,32 +26,12 @@ public class Pizza implements Item {
         return size;
     }
 
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public String getCrustType() {
-        return crustType;
-    }
-
-    public void setCrustType(String crustType) {
-        this.crustType = crustType;
-    }
-
     public List<Topping> getToppings() {
         return toppings;
     }
 
     public void setToppings(List<Topping> toppings) {
         this.toppings = toppings;
-    }
-
-    public boolean isHasStuffedCrust() {
-        return hasStuffedCrust;
-    }
-
-    public void setHasStuffedCrust(boolean hasStuffedCrust) {
-        this.hasStuffedCrust = hasStuffedCrust;
     }
 
     public void addTopping(Topping topping){
